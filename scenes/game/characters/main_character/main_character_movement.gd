@@ -69,7 +69,6 @@ func _unhandled_input(event):
 	elif event.is_action_released("bomb"):
 		_current_movement = _movements.BOMB
 	_set_animation()
-	
 
 
 # Función de movimiento general del personaje
@@ -88,7 +87,6 @@ func _move(delta):
 	else:
 		character.velocity.x = 0
 		_current_movement = _movements.IDLE	
-		
 	
 	# Cuando se presiona la tecla (espacio), hacemos animación de salto
 	if Input.is_action_just_pressed("saltar"):
@@ -99,8 +97,6 @@ func _move(delta):
 		elif _is_jumping and _jump_count < _max_jumps:
 			_current_movement = _movements.JUMP_WITH_SWORD
 			_jump_count += 1 # Sumamos el segundo salto
-	if Input.is_action_pressed("hit"):
-		_current_movement = _movements.ATTACK
 
 	_apply_gravity(delta)
 	
@@ -160,10 +156,7 @@ func _set_animation():
 		# Pausamos el sonido
 		audio_player.stop()
 		_is_playing = ""
-	if _is_jumping and _current_movement == _movements.LEFT_WITH_SWORD:
-		main_animation.flip_h = true
-	elif _is_jumping and _current_movement == _movements.RIGHT_WITH_SWORD:
-		main_animation.flip_h = false
+
 
 # Función que aplica gravedad de caída o salto
 func _apply_gravity(delta):
