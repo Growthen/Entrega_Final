@@ -394,7 +394,6 @@ script = ExtResource("3_odvu6")
 
 [node name="Animation" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_sohxe")
-animation = &"idle_with_sword"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-1, -2.5)
@@ -410,9 +409,7 @@ animation = &"fall"
 z_index = 2
 position = Vector2(32, -1)
 sprite_frames = SubResource("SpriteFrames_isfec")
-animation = &"attack_2_effect"
-frame = 3
-frame_progress = 1.0
+animation = &"idle"
 
 [node name="AreaSword" type="Area2D" parent="." groups=["hit"]]
 

@@ -153,6 +153,7 @@ func _set_animation():
 	else:
 		# Movimiento por defecto (animación de "reposo")
 		main_animation.play(_movements.IDLE_WITH_SWORD)
+		
 		# Pausamos el sonido
 		audio_player.stop()
 		_is_playing = ""

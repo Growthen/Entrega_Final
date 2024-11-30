@@ -32,3 +32,5 @@ text = "Continuará..."
 
 [node name="Skeleto1" parent="." instance=ExtResource("5_7nkbl")]
 position = Vector2(485, 486)
+animation = ""
+moving_direction = ""
