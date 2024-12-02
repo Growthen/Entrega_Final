@@ -1,11 +1,18 @@
-[gd_scene load_steps=9 format=3 uid="uid://dlj32kkmdkwjj"]
+[gd_scene load_steps=16 format=3 uid="uid://dlj32kkmdkwjj"]
 
 [ext_resource type="PackedScene" uid="uid://brhmupxo2xjim" path="res://scenes/game/levels/objects/change_scene/door_change_scene.tscn" id="1_0ge6m"]
 [ext_resource type="Texture2D" uid="uid://bk02l70othjwc" path="res://assets/Assets2/AssetsPlataformas/Platformer Asset All/Platformer Asset All B.png" id="1_1tmg8"]
+[ext_resource type="AudioStream" uid="uid://c7hjx1h0s7ous" path="res://assets/Assets2/AssetsSound/Ambiente/Ambiente_2.mp3" id="1_musoi"]
+[ext_resource type="Texture2D" uid="uid://cmkgn2sxljy08" path="res://assets/Assets2/AssetsFondo/Caverna/background4b.png" id="1_pcxj5"]
 [ext_resource type="PackedScene" uid="uid://ca3ueo0yewjov" path="res://scenes/game/characters/main_character/main_character.tscn" id="2_v57mp"]
+[ext_resource type="Texture2D" uid="uid://clicu0st0e38o" path="res://assets/Assets2/AssetsFondo/Caverna/background3.png" id="2_xupkl"]
+[ext_resource type="Texture2D" uid="uid://djdfpq2oxrhkl" path="res://assets/Assets2/AssetsFondo/Caverna/background2.png" id="3_hbt3j"]
 [ext_resource type="PackedScene" uid="uid://8rbt5lmdrp0s" path="res://scenes/game/camera/camera.tscn" id="3_tm47h"]
+[ext_resource type="Texture2D" uid="uid://0kgdm68bk78x" path="res://assets/Assets2/AssetsFondo/Caverna/background1.png" id="4_01d27"]
 [ext_resource type="PackedScene" uid="uid://0am08a75sbrj" path="res://scenes/game/enemy/Skeleto_1.tscn" id="4_d37sq"]
 [ext_resource type="PackedScene" uid="uid://c2e1lhm1w4re4" path="res://scenes/game/levels/objects/damage_object/spikes/spikes.tscn" id="6_78iar"]
+[ext_resource type="PackedScene" uid="uid://c36rtvjb7r5d1" path="res://scenes/game/levels/objects/red_potion/red_potion.tscn" id="12_xb8rb"]
+[ext_resource type="PackedScene" uid="uid://b5qjvfbte4svk" path="res://scenes/game/levels/objects/pickable_object/pickable_object.tscn" id="13_rphc4"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_cr8mi"]
 texture = ExtResource("1_1tmg8")
@@ -46524,6 +46531,35 @@ sources/0 = SubResource("TileSetAtlasSource_cr8mi")
 
 [node name="Node2D" type="Node2D"]
 
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(695.5, 523.5)
+scale = Vector2(2.44896, 3.18125)
+texture = ExtResource("1_pcxj5")
+
+[node name="Background2" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(730, 529)
+scale = Vector2(2.37708, 3.15833)
+texture = ExtResource("2_xupkl")
+
+[node name="Background_2" type="Sprite2D" parent="."]
+z_index = -2
+position = Vector2(572.5, 480.5)
+scale = Vector2(2.19271, 3.00208)
+texture = ExtResource("3_hbt3j")
+
+[node name="Backgroun_3" type="Sprite2D" parent="."]
+z_index = -3
+position = Vector2(639.5, 534)
+scale = Vector2(2.33229, 3.225)
+texture = ExtResource("4_01d27")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("1_musoi")
+volume_db = -12.0
+autoplay = true
+bus = &"Ambient"
+
 [node name="DoorChangeScene" parent="." instance=ExtResource("1_0ge6m")]
 modulate = Color(1, 1, 1, 0)
 position = Vector2(1300, 1191)
@@ -46569,6 +46605,7 @@ position = Vector2(-60, 1151)
 scale = Vector2(6.065, 1)
 
 [node name="Spikes7" parent="Obstaculos mar" instance=ExtResource("6_78iar")]
+modulate = Color(1, 1, 1, 0)
 position = Vector2(-247, 1120)
 scale = Vector2(5.68, 1)
 
@@ -46579,3 +46616,23 @@ scale = Vector2(3.005, 1)
 [node name="Spikes15" parent="Obstaculos mar" instance=ExtResource("6_78iar")]
 position = Vector2(755, 1225)
 scale = Vector2(4.935, 1)
+
+[node name="Coleccionables" type="Node2D" parent="."]
+
+[node name="RedPotion" parent="Coleccionables" instance=ExtResource("12_xb8rb")]
+position = Vector2(1465, 368)
+
+[node name="PickableObject" parent="Coleccionables" instance=ExtResource("13_rphc4")]
+position = Vector2(488, 735)
+
+[node name="PickableObject2" parent="Coleccionables" instance=ExtResource("13_rphc4")]
+position = Vector2(531, 736)
+
+[node name="PickableObject3" parent="Coleccionables" instance=ExtResource("13_rphc4")]
+position = Vector2(732, 801)
+
+[node name="PickableObject4" parent="Coleccionables" instance=ExtResource("13_rphc4")]
+position = Vector2(295, 643)
+
+[node name="PickableObject5" parent="Coleccionables" instance=ExtResource("13_rphc4")]
+position = Vector2(139, 552)
