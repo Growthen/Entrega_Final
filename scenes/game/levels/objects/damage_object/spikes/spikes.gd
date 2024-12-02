@@ -14,7 +14,7 @@ func _on_area_body_entered(body):
 	if body.is_in_group("player"):
 		_player_script = body.get_node("MainCharacterMovement")
 		# "Golpeamos" al personaje
-		_player_script.hit(2)
+		_player_script.hit(11)
 		# Iniciamos el temporizador
 		_timer.start()
 
