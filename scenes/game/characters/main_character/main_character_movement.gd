@@ -1,4 +1,5 @@
 extends Node2D
+class_name jugador
 ## Controlador de movimiento y animación de un personaje.
 ##
 ## Detecta eventos de teclado para poder mover un personaje por un escenario
