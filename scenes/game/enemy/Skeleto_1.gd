@@ -15,10 +15,18 @@ extends CharacterBody2D
 
 # Variables para control de animación y colisiones
 @onready var _animation := $Animacion
-@onready var _raycast_terrain := $RayCast/RayoTerreno
-@onready var _raycast_wall := $RayCast/RayoPared
-@onready var _raycast_vision_left := $RayCast/RayoI
-@onready var _raycast_vision_right := $RayCast/RayoD
+@onready var _raycast_terrain := $Area2D/RayoTerreno
+@onready var _raycast_wall := $Area2D/RayoPared
+@onready var _raycast_vision_left := $Area2D/RayoI
+@onready var _raycast_vision_right := $Area2D/RayoD
+@onready var _audio_player= $AudioStreamPlayer2D 
+
+var _skeleto_attack = preload("res://assets/sounds/slash.mp3")
+var _skeleto_hurt = preload("res://assets/sounds/skeletohit.mp3")
+var _skeleto_death = preload("res://assets/sounds/skeletodeath.mp3")
+var _skeleto_idle = preload("res://assets/sounds/skeletoidle.mp3")
+var _skeleto_run = preload("res://assets/sounds/SkeletoRun.mp3")
+
 
 # Definición de parámetros de física
 var _gravity = 10
@@ -34,24 +42,21 @@ var _stop_detection = false
 # Bandera de no detectar ataques
 var _stop_attack = false
 # Cuántos golpes aguanta
-var _hit_to_die = 3
+var _hit_to_die = 6
 # Golpes recibidos
 var _has_hits = 0
 # Estado de muerte del enemigo
 var die = false
 
+
 func _ready():
 	# Seteamos la direccion de movimiento
-	if moving_direction == 'right':
-		_moving_left = false
-		scale.x = -scale.x
-	# Si no seteamos la animación ponemos por defecto la animación idle
+	# Si no seteamos la animación ponemos por defecto la animación idle 
 	if not animation:
 		animation = "run"
 	# Iniciamos la animación
 	_init_state()
-
-
+	
 func _physics_process(delta):
 	if (die): return
 	# Si la animación es de correr, aplicamos el movimiento
@@ -65,20 +70,16 @@ func _physics_process(delta):
 	if moving_direction == "active" and !_stop_detection:
 		_detection()
 
-
 func _move_character(_delta):
-	# Aplicamos la gravidad
+	# Aplicamos la gravedad
 	velocity.y += _gravity
-	
-	# Aplicamos la dirección de movimiento
+	# Aplicamos la dirección correcta
 	if _moving_left:
-		velocity.x = - _speed
+		velocity.x = -_speed
 	else:
 		velocity.x = _speed
-
-	# Iniciamos el movimiento
+# Iniciamos el movimiento
 	move_and_slide()
-
 
 func _move_idle():
 	# Aplicamos la gravidad
@@ -87,8 +88,7 @@ func _move_idle():
 	velocity.x = 0
 	# Iniciamos el movimiento
 	move_and_slide()
-
-
+	
 func _on_area_2d_body_entered(body):
 	# Validamos si la colición es con el personaje principal
 	if body.is_in_group("player"):
@@ -97,24 +97,24 @@ func _on_area_2d_body_entered(body):
 		_attack()
 		# Creamos la copia de objeto
 		_body = body
-
-
+		
 func _on_area_2d_body_exited(__body):
 	if not die:
 		# Estado inicial
 		_init_state()
 
-
 func _turn():
 	# Validamos si termino el terreno
 	if not _raycast_terrain.is_colliding() or _raycast_wall.is_colliding():
 		var _object = _raycast_wall.get_collider()
-		if not _object or _object and not _object.is_in_group("player"):
-			# Damos la vuelta
+		if not _object or (_object and not _object.is_in_group("player")):
 			_moving_left = !_moving_left
-			scale.x = -scale.x
-
-
+			
+			if not _moving_left:
+				scale.x = -abs(scale.x)
+			else:
+				scale.x = abs(scale.x)
+			
 func _attack():	
 	# No atacamos si se seteó la banderita _stop_attack
 	if _stop_attack:
@@ -127,8 +127,9 @@ func _attack():
 		
 	# Animación de atacar
 	_animation.play("attack")
-
-
+	_audio_player.stream = _skeleto_attack
+	_audio_player.play()
+	
 func _init_state():
 	if _stop_attack:
 		return
@@ -138,18 +139,6 @@ func _init_state():
 	# Limpiamos las variables
 	_body = null
 	_stop_detection = false
-
-func _on_enemy_animation_frame_changed():
-	if _stop_attack:
-		return
-	# Validamos si el frame de animación es 0
-	if _animation.frame == 0 and _animation.get_animation() == "attack":
-		# Pegamos al personaje
-		if _body:
-			# Quitamos vidas
-			var _move_script = _body.get_node("MainCharacterMovement")
-			_move_script.hit(2)
-
 
 func _detection():
 	# Si ya no hay tierra regresamos al estado inicial
@@ -162,13 +151,13 @@ func _detection():
 	var _object2 = _raycast_vision_right.get_collider()
 	
 	# Validamos si la colisión es del lado izquerdo
-	if _object1 and _object1.is_in_group("player") and _raycast_vision_left.is_colliding():
+	if _object1 and _object1.is_in_group("player"):
 		_move(true)
 	else:
 		_is_persecuted = false
 	
 	# Validamos si la colisión es del lado derecho
-	if _object2 and _object2.is_in_group("player") and _raycast_vision_right.is_colliding():
+	if _object2 and _object2.is_in_group("player"):
 		_move(false)
 	
 	# No hay colisiones
@@ -182,21 +171,15 @@ func _move(_direction):
 		return
 	# Aplicamos la gravidad
 	velocity.y += _gravity
-	
-	# Volteamos al personaje
-	if not _direction:
-		_moving_left = !_moving_left
-		scale.x = -scale.x
+	# Aplicamos la dirección de movimiento
+	if _moving_left:
+		velocity.x = - _speed * 5
 	else:
-		# Aplicamos la dirección de movimiento
-		if _moving_left:
-			velocity.x = - _speed * 5
-		else:
-			velocity.x = _speed * 5
-
+		velocity.x = _speed * 5
 	# Iniciamos el movimiento
+	_audio_player.stream = _skeleto_run
+	_audio_player.play()
 	move_and_slide()
-
 
 func _on_area_2d_area_entered(area):
 	# Si estan atacando al enemigo
@@ -210,6 +193,8 @@ func _damage():
 	# Agregamos un golpe
 	_has_hits += 1
 	# Reproducimos sonido
+	_audio_player.stream = _skeleto_hurt
+	_audio_player.play()
 	# Reproducimos la animación de pegar
 	_animation.play("hit")
 	
@@ -228,17 +213,56 @@ func _damage():
 		# Seteamoas banderita no atacar
 		_stop_attack = true
 		die = true
+		dead()
 		velocity.x = 0
-		# Lo matamos y quitamos de la escena
-		if _animation.animation != "dead_ground":
-			_animation.play("dead_ground")
 
-
+func dead():
+	_animation.play("die")
+	await(_animation.animation_finished)
+	queue_free()
+	
 func _on_enemy_animation_animation_finished():
-	if _animation.animation == "dead_ground":
-		queue_free()
-	elif _animation.animation == "hit":
+	if _animation.animation == "hit":
 		if not _stop_attack: 
 			_animation.play("idle")
 			# Atacamos
 			_attack()
+
+func _on_animacion_animation_finished():
+	if _animation.animation == "hit":
+		if not _stop_attack: 
+			_animation.play("idle")
+			# Atacamos
+			_attack()
+
+
+func _on_animacion_frame_changed():
+	if _stop_attack:
+		return
+	# Validamos si el frame de animación es 0
+	if _animation.frame == 6 and _animation.get_animation() == "attack":
+		# Pegamos al personaje
+		
+		if HealthDashboard.life > 0:
+			# Reproducimos sonido
+			pass
+		else:
+			_animation.play("idle")
+		
+		if _body:
+			var _move_script = _body.get_node("MainCharacterMovement")
+			_move_script.hit(3)
+			_audio_player.stream = _skeleto_attack
+			_audio_player.play()
+	pass # Replace with function body.
+
+
+func _on_area_2d_2_body_entered(body):
+	if body is jugador:
+		_animation.play("attack")
+
+
+func _on_area_2d_2_body_exited(body):
+	if body is jugador:
+		_animation.play("idle")
+

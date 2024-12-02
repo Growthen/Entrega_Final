@@ -128,10 +128,9 @@ func _physics_process(delta):
 func _move_character(_delta):
 	# Aplicamos la gravidad
 	velocity.y += _gravity
-	
 	# Aplicamos la dirección de movimiento
 	if _moving_left:
-		velocity.x = - _speed
+		velocity.x = -_speed
 	else:
 		velocity.x = _speed
 

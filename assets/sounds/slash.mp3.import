@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/slash.mp3-9a74246e661fe3a69f4c0a0c0923424e.mp
 [params]
 
 loop=false
-loop_offset=0
-bpm=0
+loop_offset=0.0
+bpm=0.0
 beat_count=0
 bar_beats=4
